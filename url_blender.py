@@ -1,18 +1,22 @@
 import sqlite3
 import validators
 import requests
-import urllib2, StringIO
 import docx
+import re
+import spacy
+import urllib.request
+import io
+from PIL import Image
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from bs4 import BeautifulSoup
-from validators import ValidationFailure
+from validators import ValidationError
 
 def is_string_a_url(url_string):
     result = validators.url(url_string)
 
-    if isinstance(result, ValidationFailure):
+    if isinstance(result, ValidationError):
         return False
 
     return result
@@ -76,7 +80,7 @@ list_paragraph1 = doc1.add_paragraph()
 list_paragraph2 = doc2.add_paragraph()
 list_paragraph3 = doc3.add_paragraph()
 
-rowz = rows.fetchmany(300)
+rowz = rows.fetchmany(30)
 
 # The result of a "cursor.execute" can be iterated over by row
 
@@ -107,14 +111,11 @@ for i, row in enumerate(rowz):
                 print("\n")
                 """
 
-                image_from_url = urllib2.urlopen(image_content)
-                io_url = StringIO.StringIO()
-                io_url.write(image_from_url.read())
-                io_url.seek(0)
-
+                response = requests.get(image_content, stream=True)
+                image_parsed = io.BytesIO(response.content)
                 
+                print(image_parsed)
 
-                
                 general_keywords = ['video', 'sharing', 'camera phone', 'video phone', 'free', 'upload']
 
                 entertainment_keywords = ['kurt angle', 'kurt angle interview', 'wwe shorts', 'kurt angle milk truck', 'kurt angle shoot interview', 'kurt angle milk chug', 'Kurt Angle Milk story', 'Kurt Angle Funny Story', 'shoot interview', 'kurt angle wwe hall of fame', 'kurt angle funny', 'wrestling shorts', 
@@ -214,72 +215,73 @@ for i, row in enumerate(rowz):
                 'how its made', 'how it\'s made', 'how do they do it', 'how to make', 'factory made', 'how it\'s made full episodes', 'how it\'s made episodes', 'everyday items', 'production line', 'mechanical production', 'discovery', 'how stuff works', 'how its made episodes', 'discovery channel', 'how its made food', 'making of', 'made', 'cpu', 'intel', 'amd', 'things i wish i knew', 'life advice', 'life lessons', 'makeup', 'make-up']
 
                 
+                r = list_paragraph2.add_run()
 
-                if any(informational_keyword.lower() in title_content.lower() for informational_keyword in informational_keywords):
-                    r = list_paragraph2.add_run()
+                r.add_text(title_content)
+                list_paragraph2.add_run('\n')
+                r.add_picture(image_parsed, width=Pt(300))
+                list_paragraph2.add_run('\n')
+                hyperlink = add_hyperlink(list_paragraph2, url, url, 'FF8822', False)
+                list_paragraph2.add_run('\n')
+                list_paragraph2.add_run('\n')
+                list_paragraph2.add_run('\n')
+                list_paragraph2.add_run('\n')
+                list_paragraph2.add_run('\n')
 
-                    r.add_text(title_content)
-                    list_paragraph2.add_run('\n')
-                    r.add_picture(io_url, width=Pt(300))
-                    list_paragraph2.add_run('\n')
-                    hyperlink = add_hyperlink(list_paragraph2, url, url, 'FF8822', False)
-                    list_paragraph2.add_run('\n')
-                    list_paragraph2.add_run('\n')
-                    list_paragraph2.add_run('\n')
-                    list_paragraph2.add_run('\n')
-                    list_paragraph2.add_run('\n')
-
-                    print(title_content + " informational")
-
-                elif any(entertainment_keyword.lower() in title_content.lower() for entertainment_keyword in entertainment_keywords):
-                    r = list_paragraph1.add_run()
-
-                    r.add_text(title_content)
-                    list_paragraph1.add_run('\n')
-                    r.add_picture(io_url, width=Pt(300))
-                    list_paragraph1.add_run('\n')
-                    hyperlink = add_hyperlink(list_paragraph1, url, url, 'FF8822', False)
-                    list_paragraph1.add_run('\n')
-                    list_paragraph1.add_run('\n')
-                    list_paragraph1.add_run('\n')
-                    list_paragraph1.add_run('\n')
-                    list_paragraph1.add_run('\n')
-
-                    print(title_content + " entertainment")
-
-                elif any(general_keyword.lower() in title_content.lower() for general_keyword in general_keywords):
-                    r = list_paragraph3.add_run()
-
-                    r.add_text(title_content)
-                    list_paragraph3.add_run('\n')
-                    r.add_picture(io_url, width=Pt(300))
-                    list_paragraph3.add_run('\n')
-                    hyperlink = add_hyperlink(list_paragraph3, url, url, 'FF8822', False)
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
-
-                    print(title_content + " general")
+                print(title_content + " informational")
                 
-                else:
-                    r = list_paragraph3.add_run()
 
-                    r.add_text(title_content)
-                    list_paragraph3.add_run('\n')
-                    r.add_picture(io_url, width=Pt(300))
-                    list_paragraph3.add_run('\n')
-                    hyperlink = add_hyperlink(list_paragraph3, url, url, 'FF8822', False)
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
-                    list_paragraph3.add_run('\n')
+                """
+                    elif word in entertainment_keywords:
+                        r = list_paragraph1.add_run()
 
-                    print(title_content + " general")
+                        r.add_text(title_content)
+                        list_paragraph1.add_run('\n')
+                        r.add_picture(io_url, width=Pt(300))
+                        list_paragraph1.add_run('\n')
+                        hyperlink = add_hyperlink(list_paragraph1, url, url, 'FF8822', False)
+                        list_paragraph1.add_run('\n')
+                        list_paragraph1.add_run('\n')
+                        list_paragraph1.add_run('\n')
+                        list_paragraph1.add_run('\n')
+                        list_paragraph1.add_run('\n')
 
+                        print(title_content + " entertainment")
+                        break
+
+                    elif word in general_keywords:
+                        r = list_paragraph3.add_run()
+
+                        r.add_text(title_content)
+                        list_paragraph3.add_run('\n')
+                        r.add_picture(io_url, width=Pt(300))
+                        list_paragraph3.add_run('\n')
+                        hyperlink = add_hyperlink(list_paragraph3, url, url, 'FF8822', False)
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+
+                        print(title_content + " general")
+                        break
                 
+                    else:
+                        r = list_paragraph3.add_run()
+
+                        r.add_text(title_content)
+                        list_paragraph3.add_run('\n')
+                        r.add_picture(io_url, width=Pt(300))
+                        list_paragraph3.add_run('\n')
+                        hyperlink = add_hyperlink(list_paragraph3, url, url, 'FF8822', False)
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+                        list_paragraph3.add_run('\n')
+
+                        print(title_content + " general")
+                """
 
                 
 
