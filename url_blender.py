@@ -2,8 +2,6 @@ import sqlite3
 import validators
 import requests
 import docx
-import re
-import urllib.request
 import io
 from fuzzywuzzy import fuzz
 from docx import Document
@@ -102,7 +100,7 @@ rowz = rows.fetchmany(70)
 
 # The result of a "cursor.execute" can be iterated over by row
 
-for i, row in enumerate(rows):
+for row in rows:
     # Using the is_string_a_url function to filter only messages that contain URLs
     if is_string_a_url(row[1]):
 
