@@ -5,7 +5,6 @@ import docx
 import re
 import urllib.request
 import io
-from PIL import Image
 from fuzzywuzzy import fuzz
 from docx import Document
 from docx.shared import Pt
@@ -70,14 +69,23 @@ def add_hyperlink(paragraph, url, text, color, underline):
 
     return hyperlink
 
+# Ask for the OS X username to connect to the database
+sourcepath = input("What is the username for your account to connect to the database (no spaces please): ")
+
 # Create a SQL connection to our SQLite database
-con = sqlite3.connect("/Users/nishadprinja/Library/Messages/chat.db")
+con = sqlite3.connect("/Users/" + sourcepath + "/Library/Messages/chat.db")
 
 cur = con.cursor()
 
 # SQL query that gets all our necessary data from iMessage, sorts ascending by date, and filters by the phone number of the sender and whether we want the sender or receiver's messages
 # source: https://spin.atomicobject.com/search-imessage-sql/
-rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+18457097580" AND is_from_me = "0"')
+# Get the phone number for the conversation and determine if it's your own or the other person's messages you want
+phone_number = input("What is the phone number which conversation you're getting your links from? (no dashes, eg. '7775551234') ")
+self_or_other = input("Are you getting the links from your own texts (Y) or your friend's/other's (n)? ")
+if any(srchstr in self_or_other for srchstr in ('Y', 'y', '1')):
+    rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+1' + phone_number + '" AND is_from_me = "1"')
+elif any(srchstr2 in self_or_other for srchstr2 in ('N', 'n', '0', None)):
+    rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+1' + phone_number + '" AND is_from_me = "0"')
 
 # Initializing documents and paragraph structure in python-docx
 doc1 = Document()
@@ -94,7 +102,7 @@ rowz = rows.fetchmany(70)
 
 # The result of a "cursor.execute" can be iterated over by row
 
-for i, row in enumerate(rowz):
+for i, row in enumerate(rows):
     # Using the is_string_a_url function to filter only messages that contain URLs
     if is_string_a_url(row[1]):
 
