@@ -63,7 +63,9 @@ In your Terminal window you will see the following messages print:
 
 `An error occurred`
 
-And something like:
+These messages indicate that the URL input did not work so it was not processed (like if a video is deleted or made private or webpage is down).
+
+And then you will see something like:
 
 ```
 "You know WWE is fake, right?" entertainment
@@ -78,6 +80,8 @@ The script will keep going unless you interrupt it with Ctrl + F or it runs to c
 **The output of the script are three Word documents "informational.docx", "entertainment.docx", and "general.docx"**
 
 In these documents will your URLs be organized each with a title, picture, and hyperlink URL.
+
+You can move these files (to save your curated links) or delete them and run the script again (say, for a different conversation) and it will output these files for you again!
 
 Thank you for reviewing my script and hopefully it has come in handy for you.
 
