@@ -76,6 +76,7 @@ con = sqlite3.connect("/Users/nishadprinja/Library/Messages/chat.db")
 cur = con.cursor()
 
 # SQL query that gets all our necessary data from iMessage, sorts ascending by date, and filters by the phone number of the sender and whether we want the sender or receiver's messages
+# source: https://spin.atomicobject.com/search-imessage-sql/
 rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+18457097580" AND is_from_me = "0"')
 
 # Initializing documents and paragraph structure in python-docx
