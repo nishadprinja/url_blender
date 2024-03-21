@@ -13,6 +13,9 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from bs4 import BeautifulSoup
 from validators import ValidationError
 
+# A function that validates whether an input string is a URL or not
+# source: https://medium.com/@miguendes/how-to-check-if-a-string-is-a-valid-url-in-python-fb0584aab549
+# adt'l source: https://discuss.streamlit.io/t/importerror-cannot-import-name-validationfailure-from-validators-utils/51180/4
 def is_string_a_url(url_string):
     result = validators.url(url_string)
 
@@ -21,6 +24,7 @@ def is_string_a_url(url_string):
 
     return result
 
+# A plugin to manually create hyperlinks since there is no support for it in python-docx source: https://stackoverflow.com/a/48374468
 def add_hyperlink(paragraph, url, text, color, underline):
     """
     A function that places a hyperlink within a paragraph object.
@@ -70,8 +74,11 @@ def add_hyperlink(paragraph, url, text, color, underline):
 con = sqlite3.connect("/Users/nishadprinja/Library/Messages/chat.db")
 
 cur = con.cursor()
+
+# SQL query that gets all our necessary data from iMessage, sorts ascending by date, and filters by the phone number of the sender and whether we want the sender or receiver's messages
 rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+18457097580" AND is_from_me = "0"')
 
+# Initializing documents and paragraph structure in python-docx
 doc1 = Document()
 doc2 = Document()
 doc3 = Document()
@@ -80,15 +87,17 @@ list_paragraph1 = doc1.add_paragraph()
 list_paragraph2 = doc2.add_paragraph()
 list_paragraph3 = doc3.add_paragraph()
 
-
+# A temporary variable to get fewer results from the query for testing purposes
 rowz = rows.fetchmany(70)
 
 
 # The result of a "cursor.execute" can be iterated over by row
 
 for i, row in enumerate(rowz):
+    # Using the is_string_a_url function to filter only messages that contain URLs
     if is_string_a_url(row[1]):
 
+        # Try/except block that throws out bad results
         try:
             # Step 1: Fetch the web page
             url = row[1]
@@ -103,9 +112,11 @@ for i, row in enumerate(rowz):
                 image = soup.find("meta", property="og:image")
                 keywords = [item['content'] for item in soup.select('[name=Keywords][content], [name=keywords][content]')]
 
+                # Get the title of the linked content and image URL
                 title_content = title["content"] if title else "No meta title given"
                 image_content = image["content"] if image else "No meta image given"
 
+                # Commented out print statements to test if data is coming through
                 """
                 print(url)
                 print(title_content)
@@ -113,9 +124,11 @@ for i, row in enumerate(rowz):
                 print("\n")
                 """
 
+                # Read image data from image URL source: https://stackoverflow.com/questions/45545944/how-to-add-pictures-to-docx-python-from-url/45548307#45548307
                 response = requests.get(image_content, stream=True)
                 image_parsed = io.BytesIO(response.content)
 
+                # Lists of keywords personally curated from scraping keyword data of ~2500 URLs mostly YouTube videos
                 general_patterns = ['video', 'sharing', 'camera phone', 'video phone', 'free', 'upload']
 
                 entertainment_patterns = ['kurt angle', 'kurt angle interview', 'wwe shorts', 'kurt angle milk truck', 'kurt angle shoot interview', 'kurt angle milk chug', 'Kurt Angle Milk story', 'Kurt Angle Funny Story', 'shoot interview', 'kurt angle wwe hall of fame', 'kurt angle funny', 'wrestling shorts', 
@@ -172,7 +185,7 @@ for i, row in enumerate(rowz):
                 'nirvana playlist', 'nirvana clip', 'kurt cobain break string', 'kurt cobain break', 'kurt cobain scream', 'impaulsive clips', 'impaulsive', 'logan paul podcast', 'logan paul', 'maverick', 'maverick media', 'maverick house', 'logan paul clips', 'impaulsive podcast', 'hogwarts legacy', 'hogwarts legacy gameplay trailer', 'hogwarts legacy gameplay', 'harry potter game', 'harry potter', 'The Iron Claw', 'Kelly Clarkson', 'Zac Efron', 'Jeremy Allen White', 'Stanley Simons', 'Harris Dickinson', 'A24', 'he Iron Claw', 'tragic story', 'famous', 'family', 'Von Erich brothers', 'cast', 'intense training', 'transform', 'instant brothers', 'shaved', 'underwear', 'wrestle', 'The Kelly Clarkson Show', 'NBC', 'talk show', 'American Idol', 'The Voice', 'singer', 'musician', 'NBC TV', 'Television', 
                 'zac efron', 'zac efron workout', 'zac efron diet', 'zac efron interview', 'zac efron body transformation', 'zac efron shirtless', 'zac efron body', 'boy and the heron', 'hayao miyazaki', 'hayao miyazaki the boy and the heron', 'new ghibli', 'new miyazaki', 'studio ghibli', 'boy meets world', 'girl meets world', 'cory matthews', 'shawn hunter', 'topanga lawrence', 'cory and shawn', 'Vince McMahon', 'McMahon', 'Jeff Hardy', 'Matt Hardy', 'Hardy Boyz', 'ichika nito', 'lofi', 'lofi guitar', 'playing god', 'ego death', 'instrumental', 'guitars', 'indie artist', 'indie music', 'gorillaz', 'gorillaz demon days', 'gorillaz cover', 'gorillaz feel good inc', 'gorillaz feel good inc cover', 'feel good inc', 'wyclef jean', 'fugees', 'lauryn hill', 'Spongebob Music', 'Spongebob Squarepants', 'Happy Spongebob', 'spin', 'spin magazine', 'spin official', 'rock', 'classic rock', 'rock music', 'hip hop', 'music industry', 
                 'same voice actor', 'the same voice actor', 'same voice actor meme', 'voice actor', 'the same voice actors', 'voice actors', 'same voice actors', 'voice acting', 'same voice actor moral orel', 'they have the same voice actor', 'same voice actor regular show', 'same actor', 'voice actors everywhere', 'voice actors that are in everything', 'spider-man', 'spider-verse', 'across the spider-verse', 'spiderverse', 'gta san andreas', 'gta vice city', 'Pearl Jam', 'Imitation', 'Funny', 'Even Flow', 'Adam Sandler', 'Solo', 'Shredding', 'Hilarious', 'Epiphone', 'SG', 'School', 'Performance', 'Funniest', 'Bad', 'Worst', 'Crap', 'Worst Guitarist', 'Worst Guitar Solo Ever', 'Guitar Noob', 'patrick star', 'ai cover', 'michael jackson', 'mj', 'thriller', 'plankton', 'mr. krabs', 'frank sinatra', 'Darkness says', 'What did the five fingers', 'Slap', 'NPR', 'NPR Music', 'National Public Radio', 'Performance', 'tiny desk', 'tiny desk concert', 'tiny concert', 
-                'Simpsons', 'cricket', 'baseball', 'basketball', 'mlb', 'nba', 'ncaa', 'football', 'soccer']
+                'Simpsons', 'cricket', 'baseball', 'basketball', 'mlb', 'nba', 'ncaa', 'football', 'soccer', 'nhl', 'hockey']
 
                 informational_patterns = ['Spielberg', 'Steven Spielberg', 'Lipton', 'James Lipton', 'James', 'Inside the Actor\'s Studio', 'Interview', 'Best', 'Greatest', 'Legendary', 'Question', 'Close Encounters', 'Favorite', 
                 'Facebook engineer', 'software engineering', 'Wayne Jackson Jr', 'programming', 'software engineering journey', 'computer programmer', 'silicon valley', 'Google engineer', 'Amazon engineer', 'software development', 'software', 
@@ -214,10 +227,20 @@ for i, row in enumerate(rowz):
                 'adhd', 'hyperactive', 'nervousness', 'palpitations', 'adrenaline', 'cortisol', 'insomnia', 'worried', 'tension', 'wound up', 'fearful', 'difficulty sleeping', 'headaches', 'neck pain', 'tinnitus', 'vertigo', 'pinched nerve', 'herniated disc', 'hand reflexology', 'acupressure', 'acupuncture', 'stuffy nose', 'back pain', 'sinusitus', 'sinus', 'clogged nose', 'migraine', 'brain', 'nerves', 'eyes', 'ringing in ears', 'nervous', 'depression', 'how to destress', 'sleep quickly', 'how to relax', 'reduce stress', 'calmness', 'peace', 'sleep', 'how to get rich', 'make money online', 'how to become a millionaire', 'how to make money online', 'online business', 'how to make money', 'how to build wealth', 'how to be a millionaire', 'entrepreneur motivation', 'small business ideas', 'business ideas', 'chicken tenders recipe', 'chicken recipe', 'fried chicken tenders', 'chicken fingers recipe', 'how to make chicken tenders', 'how to cook chicken tenders', 'best chicken tender recipe', 'how to cook', 'crispy fried chicken recipe', 'homemade ranch', 'ranch', 'homemade ranch seasoning', 'homemade ranch salad dressing', 'homemade ranch dressing', 
                 'how its made', 'how it\'s made', 'how do they do it', 'how to make', 'factory made', 'how it\'s made full episodes', 'how it\'s made episodes', 'everyday items', 'production line', 'mechanical production', 'discovery', 'how stuff works', 'how its made episodes', 'discovery channel', 'how its made food', 'making of', 'made', 'cpu', 'intel', 'amd', 'things i wish i knew', 'life advice', 'life lessons', 'makeup', 'make-up']
 
-                
-                
+                """
+                Set found boolean to false so conditional in each list checker will evaluate 
+                until a match is found where within its code block the boolean is set to true 
+                and all other matches are skipped until the next iteration of a message where
+                found is set to false and a match can be made again
+
+                This makes sure one message is added to only one document where it matched a 
+                keyword/phrase
+                """
                 found = False
                 for informational_pattern in informational_patterns:
+                    # Using the partial ratio function from the fuzzywuzzy library take a match if it has a score of 75 out of 100 or greater and add it to informational.docx
+                    # The use of the not found conditional is explained in the text block above
+                    # Repeat this method for the remaining evaluations
                     if fuzz.partial_ratio(title_content.lower(), informational_pattern.lower()) > 75 and not found:
                         r = list_paragraph1.add_run()
 
@@ -232,6 +255,9 @@ for i, row in enumerate(rowz):
                         list_paragraph1.add_run('\n')
                         list_paragraph1.add_run('\n')
 
+                        # Print out the title with 'informational' to identify which URL was added to this category
+                        # Print out the score above 75 that the keyword match received and print out what keyword was matched
+                        # As explained at the head set found to true and break out of the loop so no matches happen again until found is false again in the next message iteration
                         print(title_content + " informational")
                         print(fuzz.partial_ratio(title_content.lower(), informational_pattern.lower()))
                         print(informational_pattern)
@@ -279,7 +305,8 @@ for i, row in enumerate(rowz):
                         print(general_pattern)
                         found = True
                         break
-                                            
+
+                    # Same logic only run if found is false and this block runs to add a message to general.docx if no keyword matches are made                       
                     elif not found:
                         r = list_paragraph3.add_run()
 
@@ -301,7 +328,8 @@ for i, row in enumerate(rowz):
 
                 
 
-
+                # Commented out code to print out the list of keywords from each URL if keywords are present in terminal
+                # The keywords were manually pulled and organized from these lists into mainly the 'informational' and 'entertainment' categories
                 """
                 all_keys = set()
                 key_holder = []
@@ -316,10 +344,12 @@ for i, row in enumerate(rowz):
                 
             else:
                 print("Failed to retrieve the web page. Status code: {response.status_code}")
-            
+        
+        # The exception block if the code in the Try block didn't work
         except:
             print("An error occurred")
 
+        # Save each document after propagating it with data
         doc1.save("informational.docx")
         doc2.save("entertainment.docx")
         doc3.save("general.docx")
