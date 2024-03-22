@@ -3,7 +3,7 @@ get urls and organize them from messages
 
 **Note: This only works in Mac OS X and may only be compatible with older versions of OS X (pre-Ventura) until a mechanism to query the new versions is found.**
 
-**Also I only made this to support US-based phone numbers. You can modify the code or message me if you want me to open this up internationally.**
+**Also I only made this to support US-based phone numbers. You can modify the code or message me if you want me to open this up internationally. My e-mail is np327@cornell.edu**
 
 ### This script takes all the URLs from a conversation, parses their title, image, and hyperlink and compares their title to a list of keywords/phrases using a plugin that rates their similarity to eachother (the fuzzywuzzy plugin) and sorts them into Word documents categorized as "informational.docx", "entertainment.docx", or "general.docx"
 
