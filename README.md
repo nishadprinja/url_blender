@@ -1,15 +1,25 @@
 # url_blender
 get urls and organize them from messages
 
-**Note: This only works in Mac OS X and may only be compatible with older versions of OS X until a mechanism to query the new versions is found.**
+**Note: This only works in Mac OS X and may only be compatible with older versions of OS X (pre-Ventura) until a mechanism to query the new versions is found.**
 
-**Also I only made this to support US-based phone numbers. You can modify the code or message me if you want me to open this up internationally**
+**Also I only made this to support US-based phone numbers. You can modify the code or message me if you want me to open this up internationally.**
 
 ### This script takes all the URLs from a conversation, parses their title, image, and hyperlink and compares their title to a list of keywords/phrases using a plugin that rates their similarity to eachother (the fuzzywuzzy plugin) and sorts them into Word documents categorized as "informational.docx", "entertainment.docx", or "general.docx"
 
 The inspiration for this script came from my own compulsion to send links to myself as messages whenever I found something I was interested by. I needed a way to consume all the links I sent myself, which through this project I found were about 2,500 so far till date. I also wanted to be able to get links from conversations with friends. I figured if I have a need for this then others must have a need as well and decided to make it.
 
 I manually curated the keywords/phrases by grabbing them from the keywords in my ~2,500 links (most of which were YouTube videos, although any link works). You can see them in the url_blender.py script and let me know if you have any suggestions for changes.
+
+## In Case of Error
+
+If you see the message when running the script the first time:
+
+`ls: Messages: Operation not permitted`
+
+Go to System Preferences > Privacy & Security and enable Terminal for Full Disk Access.
+
+![Enable Terminal Full Disk Access](https://cdn.cleanmymac.com/blog_articles/February2023/operation%20not%20permitted%20error4.png)
 
 # Instructions for Use
 
@@ -91,3 +101,4 @@ Thank you for reviewing my script and hopefully it has come in handy for you.
 2. Adding functionality for WhatsApp and enabling you to grab URLs from conversations there to place in Word files
 3. Making it possible to make this script work in group texts- as of now I haven't got this working as far as I know
 4. Separating the file structure further than "informational", "entertainment", and "general" so things are organized further
+5. Allowing for the script to update the Word documents with new URLs from new messages by scanning to see if previous data are there in our documents instead of having to process all the messages again just to get new links added to our Word documents
