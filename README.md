@@ -83,7 +83,7 @@ And then you will see something like:
 WWE
 ```
 
-**Note: If you find that the processes stop or hang and no new data is being printed to the terminal press Ctrl + C to interrupt and force it to continue. I found this happened to me in one case when trying to grab the links from a conversation.**
+**Note: If you find that the processes stop or hang and no new data is being printed to the terminal press Ctrl + C to interrupt and force it to continue. I found this happened to me in one case when trying to grab the links I sent from a conversation.**
 
 The first line is the title of your URL with the category it's placed in at the end of it (entertainment in this case). Then the second line is the fuzzywuzzy score that will have to be greater than 75 and it is the score for comparing the keyword on the third line (WWE) with the title ("You know WWE is fake, right?") for closeness.
 
