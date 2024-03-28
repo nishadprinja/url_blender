@@ -248,73 +248,76 @@ for row in rows:
                     # Using the partial ratio function from the fuzzywuzzy library take a match if it has a score of 75 out of 100 or greater and add it to informational.docx
                     # The use of the not found conditional is explained in the text block above
                     # Repeat this method for the remaining evaluations
-                    if fuzz.partial_ratio(title_content.lower(), informational_pattern.lower()) > 75 and not found:
-                        r = list_paragraph1.add_run()
+                    if not found:
+                        if fuzz.partial_ratio(title_content.lower(), informational_pattern.lower()) > 75:
+                            r = list_paragraph1.add_run()
 
-                        r.add_text(title_content)
-                        list_paragraph1.add_run('\n')
-                        r.add_picture(image_parsed, width=Pt(300))
-                        list_paragraph1.add_run('\n')
-                        hyperlink = add_hyperlink(list_paragraph1, url, url, 'FF8822', False)
-                        list_paragraph1.add_run('\n')
-                        list_paragraph1.add_run('\n')
-                        list_paragraph1.add_run('\n')
-                        list_paragraph1.add_run('\n')
-                        list_paragraph1.add_run('\n')
+                            r.add_text(title_content)
+                            list_paragraph1.add_run('\n')
+                            r.add_picture(image_parsed, width=Pt(300))
+                            list_paragraph1.add_run('\n')
+                            hyperlink = add_hyperlink(list_paragraph1, url, url, 'FF8822', False)
+                            list_paragraph1.add_run('\n')
+                            list_paragraph1.add_run('\n')
+                            list_paragraph1.add_run('\n')
+                            list_paragraph1.add_run('\n')
+                            list_paragraph1.add_run('\n')
 
-                        # Print out the title with 'informational' to identify which URL was added to this category
-                        # Print out the score above 75 that the keyword match received and print out what keyword was matched
-                        # As explained at the head set found to true and break out of the loop so no matches happen again until found is false again in the next message iteration
-                        print(title_content + " informational")
-                        print(fuzz.partial_ratio(title_content.lower(), informational_pattern.lower()))
-                        print(informational_pattern)
-                        found = True
-                        break
+                            # Print out the title with 'informational' to identify which URL was added to this category
+                            # Print out the score above 75 that the keyword match received and print out what keyword was matched
+                            # As explained at the head set found to true and break out of the loop so no matches happen again until found is false again in the next message iteration
+                            print(title_content + " informational")
+                            print(fuzz.partial_ratio(title_content.lower(), informational_pattern.lower()))
+                            print(informational_pattern)
+                            found = True
+                            break
                                
                 for entertainment_pattern in entertainment_patterns:
-                    if fuzz.partial_ratio(title_content.lower(), entertainment_pattern.lower()) > 75 and not found:
-                        r = list_paragraph2.add_run()
+                    if not found:
+                        if fuzz.partial_ratio(title_content.lower(), entertainment_pattern.lower()) > 75:
+                            r = list_paragraph2.add_run()
 
-                        r.add_text(title_content)
-                        list_paragraph2.add_run('\n')
-                        r.add_picture(image_parsed, width=Pt(300))
-                        list_paragraph2.add_run('\n')
-                        hyperlink = add_hyperlink(list_paragraph2, url, url, 'FF8822', False)
-                        list_paragraph2.add_run('\n')
-                        list_paragraph2.add_run('\n')
-                        list_paragraph2.add_run('\n')
-                        list_paragraph2.add_run('\n')
-                        list_paragraph2.add_run('\n')
+                            r.add_text(title_content)
+                            list_paragraph2.add_run('\n')
+                            r.add_picture(image_parsed, width=Pt(300))
+                            list_paragraph2.add_run('\n')
+                            hyperlink = add_hyperlink(list_paragraph2, url, url, 'FF8822', False)
+                            list_paragraph2.add_run('\n')
+                            list_paragraph2.add_run('\n')
+                            list_paragraph2.add_run('\n')
+                            list_paragraph2.add_run('\n')
+                            list_paragraph2.add_run('\n')
 
-                        print(title_content + " entertainment")
-                        print(fuzz.partial_ratio(title_content.lower(), entertainment_pattern.lower()))
-                        print(entertainment_pattern)
-                        found = True
-                        break
+                            print(title_content + " entertainment")
+                            print(fuzz.partial_ratio(title_content.lower(), entertainment_pattern.lower()))
+                            print(entertainment_pattern)
+                            found = True
+                            break
                 
-                for general_pattern in general_patterns:    
-                    if fuzz.partial_ratio(title_content.lower(), general_pattern.lower()) > 75 and not found:
-                        r = list_paragraph3.add_run()
+                for general_pattern in general_patterns:   
+                    if not found:
+                        if fuzz.partial_ratio(title_content.lower(), general_pattern.lower()) > 75:
+                            r = list_paragraph3.add_run()
 
-                        r.add_text(title_content)
-                        list_paragraph3.add_run('\n')
-                        r.add_picture(image_parsed, width=Pt(300))
-                        list_paragraph3.add_run('\n')
-                        hyperlink = add_hyperlink(list_paragraph3, url, url, 'FF8822', False)
-                        list_paragraph3.add_run('\n')
-                        list_paragraph3.add_run('\n')
-                        list_paragraph3.add_run('\n')
-                        list_paragraph3.add_run('\n')
-                        list_paragraph3.add_run('\n')
+                            r.add_text(title_content)
+                            list_paragraph3.add_run('\n')
+                            r.add_picture(image_parsed, width=Pt(300))
+                            list_paragraph3.add_run('\n')
+                            hyperlink = add_hyperlink(list_paragraph3, url, url, 'FF8822', False)
+                            list_paragraph3.add_run('\n')
+                            list_paragraph3.add_run('\n')
+                            list_paragraph3.add_run('\n')
+                            list_paragraph3.add_run('\n')
+                            list_paragraph3.add_run('\n')
 
-                        print(title_content + " general")
-                        print(fuzz.partial_ratio(title_content.lower(), general_pattern.lower()))
-                        print(general_pattern)
-                        found = True
-                        break
+                            print(title_content + " general")
+                            print(fuzz.partial_ratio(title_content.lower(), general_pattern.lower()))
+                            print(general_pattern)
+                            found = True
+                            break
 
                     # Same logic only run if found is false and this block runs to add a message to general.docx if no keyword matches are made                       
-                    elif not found:
+                    if not found:
                         r = list_paragraph3.add_run()
 
                         r.add_text(title_content)
