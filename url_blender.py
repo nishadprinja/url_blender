@@ -77,13 +77,14 @@ cur = con.cursor()
 
 # SQL query that gets all our necessary data from iMessage, sorts ascending by date, and filters by the phone number of the sender and whether we want the sender or receiver's messages
 # source: https://spin.atomicobject.com/search-imessage-sql/
+# source: https://medium.com/@yaskalidis/heres-how-you-can-access-your-entire-imessage-history-on-your-mac-f8878276c6e9
 # Get the phone number for the conversation and determine if it's your own or the other person's messages you want
 phone_number = input("What is the phone number which conversation you're getting your links from? (no dashes, eg. '7775551234') ")
 self_or_other = input("Are you getting the links from your own texts (Y) or your friend's/other's (n)? ")
 if any(srchstr in self_or_other for srchstr in ('Y', 'y', '1')):
-    rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+1' + phone_number + '" AND is_from_me = "1"')
+    rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+1' + phone_number + '" AND is_from_me = "1" ORDER BY message_date ASC;')
 elif any(srchstr2 in self_or_other for srchstr2 in ('N', 'n', '0', None)):
-    rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+1' + phone_number + '" AND is_from_me = "0"')
+    rows = cur.execute('SELECT datetime (message.date / 1000000000 + strftime ("%s", "2001-01-01"), "unixepoch", "localtime") AS message_date, message.text, message.is_from_me, chat.chat_identifier FROM chat JOIN chat_message_join ON chat. "ROWID" = chat_message_join.chat_id JOIN message ON chat_message_join.message_id = message. "ROWID" WHERE chat_identifier = "+1' + phone_number + '" AND is_from_me = "0" ORDER BY message_date ASC;')
 
 # Initializing documents and paragraph structure in python-docx
 doc1 = Document()
